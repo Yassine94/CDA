@@ -18,11 +18,13 @@ function  empty(){
       else {
         for(let item in arg) {
           console.log(`Here come's a new pirate ->> ${arg[item]}`);
-        
+
       }
     });
     myEvent.emit('newFellow');
 
   }
+
+
 
 module.exports = { empty,withArgs }
