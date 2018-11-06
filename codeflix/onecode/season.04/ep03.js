@@ -1,8 +1,8 @@
 const http = require('http');
 const url = require('url');
-const rand = Math.floor(Math.random()*1000);
 const hostname = "127.0.0.1";
-let counter = 0 ;
+var fs = require('fs');
+
 let port = process.argv[2];
 
 if (port == undefined ) {
@@ -11,30 +11,14 @@ if (port == undefined ) {
 }
 
 const server = http.createServer(function(req, res) {
-  const q = url.parse(req.url,true);
+      const q = url.parse(req.url,true);
       let query = q.query;
-
       let value = Object.values(query)
       let userValue = value[0]
-      console.log(value[0]);
-      console.log(rand);
-  if (rand > userValue ) {
-    console.log('Smaller')
-    counter++
-  }
-  else if (rand == userValue) {
-    console.log(`Well done! You have found in ${counter}`);
-    counter++
-  }
-  else if (rand < userValue) {
-    console.log('Bigger')
-    counter++
+      let data = JSON.stringify(userValue);
+      fs.writeFileSync("history.json", data);
 
-  }
-  else {
-    console.log('User values is undefined');
-    counter++
-  }
+      console.log(userValue);
 
  res.end('done');
 
