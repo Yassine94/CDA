@@ -1,7 +1,7 @@
 // calling modules
 var express = require("express");
 var bodyParser = require("body-parser");
-var routes = require("./routes/routes.js");
+var routes = require("route.js");
 var app = express();
 
 // Telling to express to accepte URL encoded & JSON values
