@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script type="text/javascript">
+    let names = ['Steeve','Ibrahima','Maxime'];
+    //let arr1 = [];
+    let arr1 = names.map(function(item) {
+      item.toUpperCase()
+    })
+    // plusieurs parametre , fonction flechee
+    let arr2 = names.map((item) => {
+      return item.toUpperCase()
+    })
+// si un parametre on peut retirer les parenthese de l'argument
+  let arr3 = names.map(item => {
+    return item.toUpperCase()
+  })
+// ecriture simplifiee , pas de parenthese, pas d'accolade
+  let arr4 = names.map(item =>item.toUpperCase())
+  // parcourir un tableau avec un foreach
+    // names.forEach(function (item) {
+    // arr1.push(item.toUpperCase());
+    // });
+    // console.log(arr1);
+    </script>
+
+  </body>
+</html>
