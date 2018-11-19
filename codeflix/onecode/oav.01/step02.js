@@ -1,68 +1,85 @@
 const express = require("express");
 const sqlite = require("sqlite3");
 const bodyParser = require("body-parser");
+const db = new sqlite.Database("myPocket");
 const app = express();
-const db = new sqlite.Database('myPocket');
-const faker = require("faker");
-var data = ({
-  firstName: faker.name.firstName(),
-  email: faker.internet.email(),
-  password: faker.internet.password()
 
-});
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 db.serialize(function() {
-  db.run("CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, nickname TEXT, email TEXT, password TEXT )");
-  // for (var i = 0; i < 6; i++) {
-  //     db.run("INSERT INTO user (nickname,email,password) VALUES (?,?,?) ", data.firstName ,data.email,data.password);
-  // }
-});
-/////////////////// SELECT ////////////////////////////////
-app.get("/users", function (req, res) {
-  //res.status(200).send({ message: 'Here all users of the db' });
-  db.all("SELECT * from user",(err,raw)=>{
-    res.json(raw);
-  })
-
+  db.run(
+    "CREATE TABLE IF NOT EXISTS user (id INTEGER PRIMARY KEY AUTOINCREMENT, nickname Text, email Text, password text)"
+  );
 });
 
-app.get("/users/:id", function (req, res) {
-  //res.status(200).send({ message: 'Here all users of the db' });
-  const idSelected = req.params.id.slice(1);
-  db.get(`SELECT * from user where id = ${idSelected}`,(err,raw)=>{
-    res.json({
-      "id" : idSelected,
-      "nickname" : raw.nickname,
-      "email" : raw.email,
-      "password" : raw.password
-
-    });
-  })
-
-});
-
-app.delete("/users/:id", function (req, res) {
-  const idSelected = req.params.id.slice(1);
-  db.get(`DELETE from user where id = ${idSelected}`,(err,raw)=>{
-    res.send(` User has been successfully deleted :{"id" : ${idSelected}`);
-  })
-  res.end()
-});
-
-  app.put("/users", function (req, res) {
-    const data ={
-      nickname : req.body.nickname,
-      email : req.body.email,
-      password : req.body.password
-    }
-
-    db.run("INSERT INTO user (nickname,email,password) VALUES (?,?,?) ",err =>
-    {if (err) throw err})
+app.get("/user", function(req, res) {
+  db.all("SELECT * from user", (err, row) => {
+    res.json(row);
   });
-  res.end()
-})
+});
+
+app.get("/user/:id", function(req, res) {
+  const idSelected = req.params.id;
+
+  db.get(`SELECT * from user where id = ${idSelected}`, (err, row) => {
+    res.json({
+      id: idSelected,
+      nickname: row.nickname,
+      email: row.email,
+      password: row.password
+    });
+  });
+});
+
+app.delete("/user/:id", function(req, res) {
+  const idSelected = req.params.id;
+  console.log(idSelected);
+  db.get(`DELETE  from user where id = ${idSelected}`, (err, row) => {
+    if (err) throw err;
+    res.send(`User has been successfully deleted :{"id" : ${idSelected}`);
+  });
+});
+
+app.post("/user", function(req, res) {
+  const data = {
+    nickname: req.body.nickname,
+    email: req.body.email,
+    password: req.body.password
+  };
+
+  console.log(data);
+  db.run(
+    `INSERT INTO user (nickname,email,password)
+  VALUES('${data.nickname}',
+         '${data.email}',
+         '${data.password}')`,
+    err => {
+      if (err) throw err;
+    }
+  );
+  res.end();
+});
+
+app.put("/user", function(req, res) {
+  const data = {
+    id: req.body.id,
+    nickname: req.body.nickname,
+    email: req.body.email,
+    password: req.body.password
+  };
+
+  db.run(
+    `UPDATE user set
+            nickname = '${data.nickname}',
+            email = '${data.email}',
+            password = '${data.password}'
+            WHERE id = '${data.id}'`,
+    err => {
+      if (err) throw err;
+    }
+  );
+  res.end();
+});
 
 app.listen(1818);
-//db.close();
